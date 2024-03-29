@@ -68,6 +68,7 @@ We provide an offline gradio demo, which can be run with the following command:
 ```bash
 python app.py
 ```
+![gradio](https://github.com/justimyhxu/GRM/assets/29980330/20941cd0-c163-4a47-8289-44eb112279e4)
 
 ## Results
 
