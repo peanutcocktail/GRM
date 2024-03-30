@@ -30,9 +30,15 @@ from third_party.generative_models.instant3d import build_instant3d_model, insta
 # from generative_models.scripts.sampling.simple_video_sample import sample as svd3d_pipe
 from segment_anything import sam_model_registry, SamPredictor
 
+if torch.cuda.is_available():
+  device = torch.device("cuda")
+elif torch.backends.mps.is_available():
+  device = torch.device("mps")
+else:
+  device = torch.device("cpu")
 ### set gpu
-torch.cuda.set_device(0)
-device = torch.device(0)
+#torch.cuda.set_device(0)
+#device = torch.device(0)
 
 
 def dump_video(image_sets, path, **kwargs):
@@ -79,7 +85,8 @@ def pad_rgba_image(in_img, ratio=0.95, shift=[0, 0]):
     return Image.fromarray(padded_img)
 
 
-def generate_cameras(r, num_cameras=20, device='cuda:0', pitch=math.pi / 8, use_fibonacci=False):
+#def generate_cameras(r, num_cameras=20, device='cuda:0', pitch=math.pi / 8, use_fibonacci=False):
+def generate_cameras(r, num_cameras=20, device=device, pitch=math.pi / 8, use_fibonacci=False):
     def normalize_vecs(vectors):
         return vectors / (torch.norm(vectors, dim=-1, keepdim=True))
 
@@ -138,7 +145,8 @@ def fibonacci_sampling_on_sphere(num_samples=1):
     return points
 
 
-def generate_input_camera(r, poses, device='cuda:0', fov=50):
+#def generate_input_camera(r, poses, device='cuda:0', fov=50):
+def generate_input_camera(r, poses, device=device, fov=50):
     def normalize_vecs(vectors): return vectors / (torch.norm(vectors, dim=-1, keepdim=True))
 
     poses = np.deg2rad(poses)
@@ -278,7 +286,12 @@ def images2gaussian(images, c2ws, fxfycxcy, model, model_config, gs_path, video_
     camera_path = generate_cameras(r=radius, num_cameras=120, pitch=np.deg2rad(10))
 
     with torch.no_grad():
-        with torch.cuda.amp.autocast(
+        if device == "cuda":
+            a = torch.cuda.amp
+        elif device == "mps":
+            a = torch.mps.amp
+        #with torch.cuda.amp.autocast(
+        with a.autocast(
                 enabled=True,
                 dtype=torch.bfloat16
         ):

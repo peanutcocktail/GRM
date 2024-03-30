@@ -1,6 +1,6 @@
-torch==2.0.1 
-torchvision==0.15.2 
-torchaudio==2.0.2 
+#torch==2.0.1 
+#torchvision==0.15.2 
+#torchaudio==2.0.2 
 pytorch-lightning==2.0.1 
 open3d
 imageio[ffmpeg]
@@ -16,7 +16,7 @@ matplotlib
 pyrender 
 boto3 
 rembg
-xformers==0.0.22
+#xformers==0.0.22
 fire 
 safetensors 
 lovely-numpy 
