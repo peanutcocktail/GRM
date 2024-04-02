@@ -17,13 +17,6 @@ from webui.tab_instant3d import create_interface_instant3d
 from webui.runner import GRMRunner
 from webui.shared_opts import send_to_click
 
-if torch.cuda.is_available():
-  device = torch.device("cuda")
-elif torch.backends.mps.is_available():
-  device = torch.device("mps")
-else:
-  device = torch.device("cpu")
-
 
 def parse_args():
     parser = argparse.ArgumentParser(description='GRM Live Demo')
@@ -35,7 +28,7 @@ def main():
     args = parse_args()
 
     torch.set_grad_enabled(False)
-    device = torch.device(device)
+    device = torch.device('cuda')
     runner = GRMRunner(device)
 
     with gr.Blocks(analytics_enabled=False,
